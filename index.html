@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[TIME TRIGGER WIDGET]</title>
+    <style>
+        :root {
+            --bg: #f4f4f0;
+            --clocker: #ffffff;
+            --clock-border: #111111;
+            --text: #111111;
+            --hour-hand: #111111;
+            --minute-hand: #111111;
+            --second-hand: #ff4500;
+            --size: 300px;
+        }
+
+        ::selection {
+         background: var(--text);
+         color: var(--bg);
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: jp;
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://toby.fangamer.com/assets/fonts/JF-Dot-Shinonome-14-Regular.ttf') format("truetype")
+        }
+
+        @font-face {
+            font-family: 'Pixel Code';
+            src: url('https://file.garden/Z5tLc-9b0gezaMou/upload/fonts/PixelCode.otf')
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Pixel Code';
+            letter-spacing: 1px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .clock {
+            width: var(--size);
+            height: var(--size);
+            background-color: var(--clocker);
+            border: 4px solid var(--clock-border);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 4px 4px 0px var(--clock-border);
+        }
+        .clock::before {
+            content: '';
+            width: var(--size);
+            height:var(--size);
+            background-color: var(--second-hand);
+            border: 24px solid var(--second-hand);
+            border-radius: 47%;
+            position: absolute;
+            display: inline-block;
+            margin-top: -24px;
+            margin-left: -24px;
+            box-shadow: 8px 8px 0px var(--clock-border);
+            z-index: -1;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background-color: var(--text);
+            border-radius: 4px;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .hour {
+            width: 6px;
+            height: 25%;
+            background-color: var(--hour-hand);
+        }
+
+        .minute {
+            width: 4px;
+            height: 38%;
+            background-color: var(--minute-hand);
+        }
+
+        .second {
+            width: 2px;
+            height: 45%;
+            background-color: var(--second-hand);
+        }
+
+        .center-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--clock-border);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .fig {
+            position: absolute;
+            right: 10px;
+            top: -20px;
+            margin-top: 30px;
+            padding: 15px;
+            border: 2px solid var(--clock-border);
+            background: var(--bg);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .fig h3 {
+            margin-top: 0;
+        }
+
+        .settin {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: 0.9rem;
+        }
+
+        input {
+            padding: 4px;
+            border: 2px solid var(--clock-border);
+            font-family: monospace;
+        }
+
+        input[type="color"] {
+            padding: 0;
+            width: 40px;
+            height: 25px;
+            cursor: pointer;
+        }
+
+        .output {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            word-break: break-all;
+            background: #eee;
+            user-select: all;
+            color: #000;
+            padding: 8px;
+            border: 1px dashed var(--clock-border);
+        }
+        .output::selection {
+            background: #aaa;
+            color: #100;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        summary {
+            letter-spacing: 2px;
+            user-select: none;
+        }
+
+        .a {
+            position: absolute;
+            top: -10px;
+            left: 7px;
+            font-size: 31px;
+        }
+
+        #c {
+            font-size: 20px;
+            margin-left: 5px;
+            opacity: 0.3;
+        }
+
+        #author {
+            margin-bottom: 50px;
+        }
+
+        summary:hover {
+            opacity: 0.9;
+        }
+
+        strong {
+            font-weight: 200 !important;
+            padding: 10px;
+            background: #eee;
+            display: block;
+            width:80%;
+            margin:0 auto;
+            text-align:center;
+        }
+
+        hr {
+            border: 2px solid var(--second-hand);
+            border-radius: 10px;
+        }
+
+        input, option, select {
+            caret-shape: block;
+            font-family: 'jp';
+            letter-spacing: 1.4px;
+            caret-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="a" id="t">[TIME TRIGGER WIDGET]</p><br><span id="c" style='text-align: right;position:absolute;top:60px;left:10px;'></span>
+    <p id="quotes"></p>
+    <p id="author"></p>
+
+    <div class="clock" id="clock">
+        <div class="hand hour" id="hour-hand"></div>
+        <div class="hand minute" id="minute-hand"></div>
+        <div class="hand second" id="second-hand"></div>
+        <div class="center-dot"></div>
+    </div>
+    <div class="fig" id="fig">
+        <details>
+            <summary onclick="a()">- Clock Settings</summary><br><hr><br>
+            <div class="settin"> <label for="quotes">Quotes?</label>
+                <select name="quotes" id="input-quotes">
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+            <div class="settin"> <label for="a">Sound? (Needs interaction with iframe to play sound)</label>
+                <select name="a" id="input-sound">
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+            <div class="settin">
+                <label for="input-size">Size:</label>
+                <input type="number" onkeydown="tt()" id="input-size" value="300" style="width:40px">
+            </div>
+            <div class="settin">
+                <label for="input-bg">Page Background:</label>
+                <input type="color" id="input-bg" value="#f4f4f0" style="width:52px">
+            </div>
+            <div class="settin">
+                <label for="input-clocker">Clock Face Color:</label>
+                <input type="color" id="input-clocker" value="#ffffff" style="width:52px">
+            </div>
+            <div class="settin">
+                <label for="input-hour">Hour Hand Color:</label>
+                <input type="color" id="input-hour" value="#111111" style="width:52px">
+            </div>
+            <div class="settin">
+                <label for="input-minute">Minute Hand Color:</label>
+                <input type="color" id="input-minute" value="#111111" style="width:52px">
+            </div>
+            <div class="settin">
+                <label for="input-second">Second Hand Color:</label>
+                <input type="color" id="input-second" value="#ff4500" style="width:52px">
+            </div>
+            <div class="settin">
+                <label for="input-text">Text Color:</label>
+                <input type="color" id="input-text" value="#111111" style="width:52px">
+            </div>
+            <div class="settin">
+                <label for="input-text">Title Text:</label>
+                <input type="input" onkeydown="tt()" id="input-a" value="[TIME TRIGGER WIDGET]" style="width:252px">
+            </div>
+            <div><br><hr><br>
+                <label style="color: #000"><strong>Shareable URL</strong></label>
+                <div class="output" id="output"></div>
+            </div>
+        </details>
+    </div>
+
+    <script defer>
+
+        // remove in release
+        localStorage.clear()
+
+        function s() {
+            document.getElementById('c').innerHTML = new Date().toTimeString();
+        }
+        let sounds;
+        s();
+        setInterval(function() {
+            s();
+        }, 1000);
+
+        // quotes
+        const quotes = [
+            {
+                text: "I pray to God. Bring back Greety, or I'll go broad and get a Chevy.",
+                author: "Azagar"
+            }, // no context for this one
+                        {
+                text: "My name is Grenblue.",
+                author: "Grenblue"
+            }, // no context for this one either. wah
+            {
+                text: "Only time will tell.",
+                author: "udrr"
+            }, // i say this a lot lol
+            {
+                text: "More, I need moe!",
+                author: "Yelorange"
+            }, // i showed yelo this quote and he said "say that again and i tell you a secret YOU DON'T want to know"
+            {
+                text: "How charming is that?",
+                author: "Onio"
+            } // i will forever remind onio of this hehe
+        ];
+
+        function rumble() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const randomQuote = quotes[randomIndex];
+            document.getElementById("quotes").innerHTML = `"<i>${randomQuote.text}</i>"`;
+            document.getElementById("author").innerHTML = `- ${randomQuote.author}`;
+        }
+        window.onload = rumble;
+        // meow
+        function ga(min, max) {
+            return Math.random() * (max - min) + min;
+       }
+
+        const aa = new URLSearchParams(window.location.search);
+        if (!aa.has('title')) {
+            aa.set('title', `[TIME TRIGGER WIDGET]`);
+        }
+        const title = document.querySelector('#t');
+        if (title) {
+            title.innerText = aa.get('title');
+        }
+       
+        const keyz = {
+            size: '--size',
+            bg: '--bg',
+            clockBg: '--clocker',
+            hour: '--hour-hand',
+            minute: '--minute-hand',
+            second: '--second-hand',
+            text: '--text'
+        };
+        const ctx = new(window
+            .AudioContext || window
+            .webkitAudioContext)();
+
+        function typea() {
+            const osc = ctx
+                .createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(ga(700, 800),
+                ctx.currentTime);
+            osc.frequency
+                .exponentialRampToValueAtTime(
+                    ga(600, 700), ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.02, ctx
+                .currentTime);
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    0.01, ctx.currentTime + 0.01);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + ga(0.008, 0.009));
+        }
+
+        function a() {
+            const osc = ctx
+                .createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1400,
+                ctx.currentTime);
+            osc.frequency
+                .exponentialRampToValueAtTime(
+                    50, ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.02, ctx
+                .currentTime);
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    0.01, ctx.currentTime + 0.01);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.01);
+        }
+
+        function tt() {
+            const osc = ctx
+                .createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(ga(100, 400),
+                ctx.currentTime);
+            osc.frequency
+                .exponentialRampToValueAtTime(
+                    50, ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.02, ctx
+                .currentTime);
+            gain.gain
+                .exponentialRampToValueAtTime(
+                    0.01, ctx.currentTime + 0.01);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + ga(0.004, 0.01));
+        }
+
+        function uppy() {
+            const now = new Date();
+            const seconds = now.getSeconds();
+            const minutes = now.getMinutes();
+            const hours = now.getHours();
+            const secondz = (seconds / 60) * 360;
+            const minz = (minutes / 60) * 360 + (seconds / 60) * 6;
+            const awurdeg = ((hours % 12) / 12) * 360 + (minutes / 60) * 30;
+            document.getElementById('hour-hand').style.transform = `translateX(-50%) rotate(${awurdeg}deg)`;
+            document.getElementById('minute-hand').style.transform = `translateX(-50%) rotate(${minz}deg)`;
+            document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${secondz + 2}deg)`;
+            setTimeout(() => {
+                document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${secondz - 1}deg)`;
+                setTimeout(() => {
+                    document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${secondz}deg)`;
+                }, 50);
+            }, 80);
+            if (sounds == "false") return;
+            typea();
+        }
+
+        setInterval(uppy, 1000);
+        uppy();
+
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('embed') === 'true') {
+                document.getElementById('fig').classList.add('hidden');
+            }
+            if (urlParams.get('quotes') === 'false') {
+                document.getElementById('quotes').classList.add('hidden');
+                document.getElementById('author').classList.add('hidden');
+            }
+
+            Object.keys(keyz).forEach(key => {
+                const inputElement = document.getElementById(`input-${key === 'clockBg' ? 'clocker' : key}`);
+                let value = urlParams.get(key);
+                if (!value) {
+                    value = localStorage.getItem(`clock-${key}`);
+                }
+                if (!value && inputElement) {
+                    value = inputElement.value;
+                }
+                const unit = key === 'size' ? 'px' : '';
+
+                if (value) {
+                    document.documentElement.style.setProperty(keyz[key], value + unit);
+                    if (inputElement) inputElement.value = value;
+                }
+            });
+            geb();
+        }
+const q = document.getElementById('input-quotes');
+let quotez = q.value;            
+        function handz(e) {
+            quotez = q.value;  
+            const id = e.target.id;
+            let key = id.replace('input-', '');
+            if (key === 'clocker') key = 'clockBg';
+            let value = e.target.value;
+            const unit = key === 'size' ? 'px' : '';
+            sounds = document.querySelector('#input-sound').value;
+            document.documentElement.style.setProperty(keyz[key], value + unit);
+            localStorage.setItem(`clock-${key}`, value);
+            aa.set('title', `${document.querySelector('#input-a').value}`);
+            const title = document.querySelector('#t');
+            if (title) {
+                title.innerText = aa.get('title');
+            }
+           if (quotez !== 'true') {
+            document.getElementById('quotes').classList.add('hidden');
+                document.getElementById('author').classList.add('hidden');
+        } else {
+            document.getElementById('quotes').classList.remove('hidden');
+                document.getElementById('author').classList.remove('hidden');
+        }
+            geb();
+        }
+
+        function geb() {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const params = new URLSearchParams();
+            
+            Object.keys(keyz).forEach(key => {
+                const inputElement = document.getElementById(`input-${key === 'clockBg' ? 'clocker' : key}`);
+                if (inputElement) {
+                    params.append(key, inputElement.value);
+                }
+            });
+            const fullUrl = `${baseUrl}?${params.toString()}&title=${aa.get('title')}&quotes=${quotez}&sounds=${sounds}&embed=true`;
+            document.getElementById('output').innerText = fullUrl;
+        }
+        document.querySelectorAll('.fig .settin').forEach(input => {
+            input.addEventListener('input', handz);
+        });
+        init();
+
+        // sounds
+        if (sounds !== 'true') {
+            sounds = aa.get('sounds');
+        }
+    </script>
+</body>
+</html>
