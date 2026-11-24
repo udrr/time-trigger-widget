@@ -6,7 +6,7 @@
 ![Javascript](https://shields.io/badge/JavaScript-F7DF1E?logo=JavaScript&logoColor=000)
 ![Javascript](https://shields.io/badge/ver-1.0.0-red)
 <br>
-A time widget in HTML, CSS, and JavaScript to put on your website as an embeddable, inline frame made by [udrr](https://github.com/udrr). Currently a work in progress indicated by the severe lack in quotes...
+A time widget in HTML, CSS, and JavaScript to put on your website as an embeddable, inline frame. Currently a work in progress indicated by the severe lack in quotes...
 ## C://:usage
 Click the <code>Clock Settings</code> on the top right to open up a configuration panel to customize the clock in the center. Any changes get automatically added to localStorage so you can view your changes again.
 | Option | What it does |
@@ -21,7 +21,7 @@ Click the <code>Clock Settings</code> on the top right to open up a configuratio
 | Text Color | Changes the color of the text |
 | Title Text | Changes title text (on default, the title text is the [TIME TRIGGER WIDGET] in the top left) |
 
-Once you're happy with your time widget, copy and paste the shareable URL and put it in an iframe like so:
+Once you're happy with your time widget, copy and paste the shareable URL and put it in an iframe like this example:
 ```
 <iframe src="//udrr.github.io/time-trigger-widget?<your-config-settings>&embed=true" style="border: none;" width="700" height="700" title="TIME TRIGGER WIDGET" loading="lazy"></iframe>
 ```
